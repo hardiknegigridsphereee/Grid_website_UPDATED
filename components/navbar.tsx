@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ChevronDown, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { navLinks, products, serviceCategories } from '@/data/content'
@@ -16,7 +17,13 @@ export function Navbar() {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState<MenuKey | null>(null)
   const [mobileSection, setMobileSection] = useState<MenuKey | null>(null)
+  const [mounted, setMounted] = useState(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -37,6 +44,8 @@ export function Navbar() {
   const isMega = (label: string): MenuKey | null =>
     label === 'Products' ? 'products' : label === 'Services' ? 'services' : null
 
+  const logoSrc = resolvedTheme === 'dark' ? '/products/logo-dark.png' : '/products/logo-light.png'
+
   return (
     <header
       className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6"
@@ -51,15 +60,17 @@ export function Navbar() {
         )}
       >
         <Link href="/" className="flex items-center gap-2" onMouseEnter={scheduleClose}>
-          <img
-            id="navbar-logo"
-            src="/logo1-transparent.png"
-            alt="GridSphere"
-            className="h-8 w-8"
-          />
-          <span className="font-display text-lg font-semibold leading-none tracking-tight">
-            GridSphere
-          </span>
+          {mounted && (
+            <Image
+              id="navbar-logo"
+              src={logoSrc}
+              alt="GridSphere"
+              width={160}
+              height={36}
+              priority
+              className="h-8 w-auto object-contain"
+            />
+          )}
         </Link>
 
         <div className="hidden items-center gap-7 md:flex">
@@ -179,25 +190,25 @@ export function Navbar() {
                             <div className="flex flex-col gap-1 px-2 pb-2">
                               {key === 'products'
                                 ? products.map((p) => (
-                                    <Link
-                                      key={p.slug}
-                                      href={`/products/${p.slug}`}
-                                      onClick={() => setOpen(false)}
-                                      className="rounded-lg px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                                    >
-                                      {p.name}
-                                    </Link>
-                                  ))
+                                  <Link
+                                    key={p.slug}
+                                    href={`/products/${p.slug}`}
+                                    onClick={() => setOpen(false)}
+                                    className="rounded-lg px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                                  >
+                                    {p.name}
+                                  </Link>
+                                ))
                                 : serviceCategories.map((c) => (
-                                    <Link
-                                      key={c.slug}
-                                      href={`/services#${c.slug}`}
-                                      onClick={() => setOpen(false)}
-                                      className="rounded-lg px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                                    >
-                                      {c.category}
-                                    </Link>
-                                  ))}
+                                  <Link
+                                    key={c.slug}
+                                    href={`/services#${c.slug}`}
+                                    onClick={() => setOpen(false)}
+                                    className="rounded-lg px-4 py-2.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                                  >
+                                    {c.category}
+                                  </Link>
+                                ))}
                             </div>
                           </motion.div>
                         )}
@@ -225,9 +236,10 @@ export function Navbar() {
               </a>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+        )
+        }
+      </AnimatePresence >
+    </header >
   )
 }
 
@@ -353,6 +365,6 @@ function ServicesMega() {
           <ArrowUpRight className="h-4 w-4" />
         </a>
       </div>
-    </div>
+    </div >
   )
 }

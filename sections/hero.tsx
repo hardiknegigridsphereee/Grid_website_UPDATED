@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, ArrowUpRight } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Check } from 'lucide-react'
 import { AnimatedBackground } from '@/components/animated-background'
 import { MagneticButton } from '@/components/magnetic-button'
 import { staggerContainer, fadeUp } from '@/animations/variants'
@@ -78,6 +78,25 @@ export function Hero() {
             View Projects
             <ArrowUpRight className="h-4 w-4" />
           </MagneticButton>
+        </motion.div>
+
+        <motion.div
+          variants={fadeUp}
+          className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3"
+        >
+          {[
+            '100+ Projects Delivered',
+            '30+ Enterprise Clients',
+            '15+ Industries Served',
+            'AI-Driven Solutions',
+          ].map((item) => (
+            <div key={item} className="flex items-center gap-2">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-jade/20 text-jade-bright">
+                <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+              </span>
+              <span className="text-sm text-muted-foreground">{item}</span>
+            </div>
+          ))}
         </motion.div>
       </motion.div>
 
