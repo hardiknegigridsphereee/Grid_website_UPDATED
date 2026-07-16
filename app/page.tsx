@@ -9,13 +9,13 @@ import { TechStack } from '@/sections/tech-stack'
 import { Partnerships } from '@/sections/partnerships'
 import { FeaturedProjects } from '@/sections/featured-projects'
 import { FinalCTA } from '@/sections/final-cta'
-import { IntroAnimation } from '@/components/intro-animation'
-import Contact  from '@/sections/contact';
+import Contact from '@/sections/contact'
+// ❌ removed: import { IntroAnimation } from '@/components/intro-animation'
 
 export default function Home() {
   return (
     <>
-      <IntroAnimation logoSrc="/logo1-transparent.png" brandName="GridSphere" />
+      {/* ❌ removed: <IntroAnimation brandName="GridSphere" /> */}
       <Navbar />
       <main className="relative bg-background">
         <Hero />

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
+import { useTheme } from 'next-themes'
 
 interface IntroAnimationProps {
   logoSrc?: string
@@ -14,20 +15,46 @@ interface IntroAnimationProps {
 // (measured position → animated x/y/scale) into the navbar logo's exact
 // spot while the dark overlay fades away underneath it.
 export function IntroAnimation({
-  logoSrc = '/logo1-transparent.png',
+  logoSrc,
   brandName = 'GridSphere',
   targetId = 'navbar-logo',
   onComplete = () => {},
 }: IntroAnimationProps) {
   const [show, setShow] = useState(true)
   const [textVisible, setTextVisible] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const logoRef = useRef<HTMLImageElement>(null)
   const logoControls = useAnimation()
   const overlayControls = useAnimation()
+  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
+    if (resolvedTheme) setMounted(true)
+  }, [resolvedTheme])
+
+  const resolvedLogoSrc =
+    logoSrc ?? (resolvedTheme === 'dark' ? '/logo-dark.png' : '/logo-light.png')
+
+  useEffect(() => {
+    if (!mounted) return
+
     document.body.style.overflow = 'hidden'
     let cancelled = false
+    let finished = false
+
+    const finish = () => {
+      if (finished || cancelled) return
+      finished = true
+      setShow(false)
+      document.body.style.overflow = ''
+      onComplete()
+    }
+
+    // Hard safety net: no matter what happens in the animation sequence
+    // below (stale useAnimation controls after Fast Refresh, target
+    // element never appearing, a promise that never resolves, etc.),
+    // the intro will never block the page for more than ~4.5s.
+    const safetyTimer = setTimeout(finish, 4500)
 
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -72,8 +99,14 @@ export function IntroAnimation({
       logoControls.set({ rotate: 0 })
       if (cancelled) return
 
-      // 2. Measure navbar logo position vs current intro logo position
-      const targetEl = document.getElementById(targetId)
+      // 2. Measure navbar logo position vs current intro logo position.
+      // Give the target element a couple of animation frames to exist —
+      // it's rendered by a sibling component that mounts independently.
+      let targetEl = document.getElementById(targetId)
+      for (let i = 0; i < 3 && !targetEl; i++) {
+        await new Promise((r) => requestAnimationFrame(r))
+        targetEl = document.getElementById(targetId)
+      }
       const logoEl = logoRef.current
 
       if (targetEl && logoEl) {
@@ -110,19 +143,20 @@ export function IntroAnimation({
       }
 
       if (cancelled) return
-      setShow(false)
-      document.body.style.overflow = ''
-      onComplete()
+      finish()
     }
 
-    sequence()
+    sequence().catch(finish)
 
     return () => {
       cancelled = true
+      clearTimeout(safetyTimer)
       document.body.style.overflow = ''
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [mounted])
+
+  if (!mounted) return null
 
   return (
     <AnimatePresence>
@@ -134,7 +168,7 @@ export function IntroAnimation({
         >
           <motion.img
             ref={logoRef}
-            src={logoSrc}
+            src={resolvedLogoSrc}
             alt={brandName}
             initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
             animate={logoControls}

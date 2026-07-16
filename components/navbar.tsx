@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useTheme } from 'next-themes'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { navLinks } from '@/data/content'
@@ -11,6 +13,12 @@ import { cn } from '@/lib/utils'
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -18,6 +26,9 @@ export function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  const logoSrc = resolvedTheme === 'dark' ? '/logo-dark.png' : '/logo-light.png'
+  const isDark = resolvedTheme === 'dark'
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
@@ -29,18 +40,21 @@ export function Navbar() {
             : 'border-transparent bg-transparent',
         )}
       >
-        <Link href="/" className="flex items-center gap-2">
-          {/* id used by IntroAnimation to measure this position and
-              animate the intro logo into it. */}
-          <img
-            id="navbar-logo"
-            src="/logo1-transparent.png"
-            alt="GridSphere"
-            className="h-8 w-8"
-          />
-          <span className="font-display text-lg font-semibold leading-none tracking-tight">
-            GridSphere
-          </span>
+        <Link href="/" className="flex items-center">
+          {mounted && (
+            <Image
+              id="navbar-logo"
+              src={logoSrc}
+              alt="GridSphere"
+              width={160}
+              height={36}
+              priority
+              className={cn(
+                'h-8 w-auto object-contain',
+                isDark && 'mix-blend-screen',
+              )}
+            />
+          )}
         </Link>
 
         <div className="hidden items-center gap-8 md:flex">

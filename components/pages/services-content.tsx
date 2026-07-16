@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Check, Search, PenTool, Hammer, Rocket } from 'lucide-react'
-import { services } from '@/data/content'
+import { serviceCategories } from '@/data/content'
 import { SectionHeading } from '@/components/section-heading'
 import { staggerContainer, fadeUp } from '@/animations/variants'
 
