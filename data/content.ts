@@ -2,12 +2,14 @@ import type { LucideIcon } from 'lucide-react'
 import {
   Code2,
   BrainCircuit,
-  Boxes,
   Globe,
   Smartphone,
-  Cloud,
-  Workflow,
-  BarChart3,
+  CircuitBoard,
+  Wifi,
+  Cpu,
+  Terminal,
+  Box,
+  PenTool,
   Sprout,
   GraduationCap,
   Truck,
@@ -31,109 +33,89 @@ export const metrics: Metric[] = [
 ]
 
 /* --------------------------------- Services --------------------------------- */
-export interface Service {
+export interface ServiceItem {
   title: string
   description: string
   icon: LucideIcon
-  /** Bullet list of what the engagement includes. */
-  includes: string[]
 }
 
-export const services: Service[] = [
+export interface ServiceCategory {
+  category: string
+  slug: string
+  description: string
+  items: ServiceItem[]
+}
+
+export const serviceCategories: ServiceCategory[] = [
   {
-    title: 'Custom Software Development',
-    description:
-      'Bespoke platforms engineered around your operations, from architecture to deployment.',
-    icon: Code2,
-    includes: [
-      'Discovery, architecture & technical roadmap',
-      'Full-stack product engineering',
-      'Automated testing & CI/CD pipelines',
-      'Ongoing maintenance & SLAs',
+    category: 'Software Development',
+    slug: 'software-development',
+    description: 'End-to-end software engineering across web, mobile and AI.',
+    items: [
+      {
+        title: 'Custom Software Development',
+        description: 'Bespoke platforms engineered around your operations.',
+        icon: Code2,
+      },
+      {
+        title: 'Mobile App Development',
+        description: 'Native-grade iOS & Android apps.',
+        icon: Smartphone,
+      },
+      {
+        title: 'Web Development',
+        description: 'Fast, accessible, modern web experiences.',
+        icon: Globe,
+      },
+      {
+        title: 'AI Development',
+        description: 'Predictive models, computer vision & generative AI.',
+        icon: BrainCircuit,
+      },
     ],
   },
   {
-    title: 'AI Solutions',
-    description:
-      'Predictive models, computer vision and generative AI woven directly into your products.',
-    icon: BrainCircuit,
-    includes: [
-      'Model selection & fine-tuning',
-      'Computer vision & NLP pipelines',
-      'RAG and generative AI features',
-      'MLOps, monitoring & evaluation',
+    category: 'Hardware Development',
+    slug: 'hardware-development',
+    description: 'From concept to manufactured device.',
+    items: [
+      {
+        title: 'Hardware Design',
+        description: 'Electronics & product hardware design.',
+        icon: CircuitBoard,
+      },
+      {
+        title: 'IoT Development',
+        description: 'Connected devices & sensor networks.',
+        icon: Wifi,
+      },
+      {
+        title: 'PCB Design & Development',
+        description: 'Schematic capture through fabrication-ready PCB layout.',
+        icon: Cpu,
+      },
+      {
+        title: 'Embedded Systems Development',
+        description: 'Firmware and embedded software for custom hardware.',
+        icon: Terminal,
+      },
     ],
   },
   {
-    title: 'ERP Systems',
-    description:
-      'Unified resource planning that connects finance, inventory, HR and operations.',
-    icon: Boxes,
-    includes: [
-      'Finance, HR & inventory modules',
-      'Role-based access & approvals',
-      'Legacy data migration',
-      'Custom reporting dashboards',
-    ],
-  },
-  {
-    title: 'Web Development',
-    description:
-      'Fast, accessible and beautiful web experiences built on modern frameworks.',
-    icon: Globe,
-    includes: [
-      'Design systems & component libraries',
-      'Server-rendered, SEO-ready apps',
-      'Accessibility (WCAG) compliance',
-      'Core Web Vitals performance tuning',
-    ],
-  },
-  {
-    title: 'Mobile Applications',
-    description:
-      'Native-grade iOS and Android apps with seamless offline and realtime sync.',
-    icon: Smartphone,
-    includes: [
-      'iOS & Android from one codebase',
-      'Offline-first data sync',
-      'Push notifications & deep links',
-      'App Store & Play Store delivery',
-    ],
-  },
-  {
-    title: 'Cloud Solutions',
-    description:
-      'Scalable, secure cloud infrastructure with automated CI/CD and observability.',
-    icon: Cloud,
-    includes: [
-      'Infrastructure as code',
-      'Autoscaling & cost optimization',
-      'Observability & alerting',
-      'Security hardening & compliance',
-    ],
-  },
-  {
-    title: 'Automation Systems',
-    description:
-      'Workflow automation that removes manual toil and accelerates every process.',
-    icon: Workflow,
-    includes: [
-      'Process mapping & audit',
-      'Workflow & RPA orchestration',
-      'System-to-system integrations',
-      'Human-in-the-loop controls',
-    ],
-  },
-  {
-    title: 'Analytics Platforms',
-    description:
-      'Realtime dashboards and data pipelines that turn raw signals into decisions.',
-    icon: BarChart3,
-    includes: [
-      'ETL & streaming data pipelines',
-      'Warehouse & lakehouse modeling',
-      'Realtime KPI dashboards',
-      'Self-serve reporting for teams',
+    category: 'Additional Services',
+    slug: 'additional-services',
+    description: 'Design & prototyping to bring products to life.',
+    items: [
+      {
+        title: '3D CAD Modeling',
+        description: 'Precision 3D modeling for hardware and enclosures.',
+        icon: Box,
+      },
+      {
+        title: 'Product Design & Prototyping',
+        description: 'From concept sketches to working prototypes.',
+        icon: PenTool,
+      },
     ],
   },
 ]
@@ -176,102 +158,84 @@ export const processSteps: ProcessStep[] = [
 export interface Product {
   name: string
   slug: string
+  tagline: string
   description: string
   longDescription: string
   image: string
+  category: string
   tags: string[]
   features: string[]
+  segments?: { title: string; description: string }[]
   link?: string
 }
 
 export const products: Product[] = [
   {
-    name: 'Orchard Intelligence Platform',
-    slug: 'orchard-intelligence-platform',
+    name: 'Smart Agricultural Weather Station',
+    slug: 'smart-agricultural-weather-station',
+    tagline: 'AI-powered precision farming',
     description:
-      'AI-driven precision agriculture — disease prediction, irrigation and yield forecasting from live field telemetry.',
+      'An AI-powered weather station built for the field — real-time environmental monitoring that turns raw sensor data into precision-farming decisions.',
     longDescription:
-      'Orchard Intelligence turns raw field telemetry into decisions. It ingests data from soil, weather and imaging sensors, runs predictive models for disease and irrigation, and surfaces clear guidance to growers through a realtime dashboard and mobile alerts — reducing crop loss and water waste across thousands of hectares.',
-    image: '/products/orchard-intelligence.png',
-    tags: ['AI/ML', 'IoT', 'Next.js', 'TensorFlow'],
+      'The Smart Agricultural Weather Station combines rugged field hardware with AI-driven analysis to give growers a live picture of the conditions that matter — temperature, humidity, rainfall, wind and soil signals — feeding models that support irrigation and crop-health decisions on the ground.',
+    image: '/products/weather-station.png',
+    category: 'Agriculture · Hardware · AI',
+    tags: ['AI', 'IoT', 'Agriculture', 'Sensors'],
     features: [
-      'Disease prediction from computer-vision imaging',
-      'Smart irrigation scheduling from soil telemetry',
-      'Yield forecasting with seasonal ML models',
-      'Realtime alerts on web and mobile',
-      'Multi-farm fleet and sensor management',
+      'Real-time environmental & weather monitoring',
+      'AI-assisted precision farming insights',
+      'Rugged, field-deployable sensor hardware',
+      'Cloud dashboard with historical trends',
     ],
     link: '#',
   },
   {
-    name: 'School ERP Suite',
-    slug: 'school-erp-suite',
+    name: 'TrakID',
+    slug: 'trakid',
+    tagline: 'GPS tracking for children',
     description:
-      'End-to-end education management — admissions, attendance, timetabling, fees and parent engagement.',
+      'A GPS tracking ecosystem built for child safety — for individual families and for schools managing devices at scale.',
     longDescription:
-      'School ERP Suite unifies every administrative workflow a modern institution runs — from admissions and attendance to timetabling, fee collection and parent communication — into a single role-aware platform that saves staff hours every week and keeps families informed.',
-    image: '/products/school-erp.png',
-    tags: ['ERP', 'React', 'PostgreSQL', 'Node.js'],
+      'TrakID pairs a dedicated tracker with a parent mobile app and a school-ready management layer. Parents get live location and alerts for their own child; schools can issue and manage trackers in bulk, integrated directly with the GridSphere School ERP.',
+    image: '/products/trakid.png',
+    category: 'IoT · Mobile · Safety',
+    tags: ['GPS', 'Mobile App', 'School ERP', 'Safety'],
     features: [
-      'Admissions & student lifecycle management',
-      'Biometric and app-based attendance',
-      'Automated timetabling & substitutions',
-      'Online fee collection & receipts',
-      'Parent & teacher engagement portals',
+      'Live GPS tracking & geofencing',
+      'Dedicated parent mobile application',
+      'Bulk device provisioning for schools',
+      'Integrated with GridSphere School ERP',
+    ],
+    segments: [
+      {
+        title: 'For Parents',
+        description:
+          'Individual parents can purchase a tracker and monitor their child in real time through the TrakID parent app.',
+      },
+      {
+        title: 'For Schools',
+        description:
+          'Schools can purchase devices in bulk, with fleet management integrated directly into the School ERP.',
+      },
     ],
     link: '#',
   },
   {
-    name: 'Workforce Tracker',
-    slug: 'workforce-tracker',
+    name: 'Biometric Attendance System',
+    slug: 'biometric-attendance-system',
+    tagline: 'In-house attendance hardware & software',
     description:
-      'Realtime workforce visibility with geolocation, shift scheduling and productivity analytics.',
+      "GridSphere's own biometric attendance solution — reliable hardware paired with software that plugs straight into payroll and HR.",
     longDescription:
-      'Workforce Tracker gives operations leaders live visibility into distributed teams. Geolocation check-ins, shift scheduling and productivity analytics come together so managers can staff accurately, reduce idle time and act on the ground truth of what is happening in the field.',
-    image: '/products/workforce-tracker.png',
-    tags: ['Tracking', 'Mobile', 'Realtime', 'AWS'],
+      'A complete biometric attendance solution designed and built in-house, from the fingerprint hardware to the reporting dashboard, giving organizations accurate, tamper-resistant attendance data with minimal setup.',
+    image: '/products/biometric-attendance.png',
+    category: 'Hardware · Enterprise',
+    tags: ['Biometric', 'Hardware', 'Enterprise'],
     features: [
-      'Live geolocation check-in and geofencing',
-      'Drag-and-drop shift scheduling',
-      'Productivity and utilization analytics',
-      'Payroll-ready timesheet exports',
-      'Offline-capable mobile app',
-    ],
-    link: '#',
-  },
-  {
-    name: 'Asset Management Platform',
-    slug: 'asset-management-platform',
-    description:
-      'Full asset lifecycle — inventory, maintenance scheduling, depreciation and QR-based tracking.',
-    longDescription:
-      'Asset Management Platform tracks every asset from purchase to retirement. QR-tagged inventory, preventive maintenance scheduling and automated depreciation give finance and operations a single source of truth, cutting downtime and eliminating spreadsheet chaos.',
-    image: '/products/asset-management.png',
-    tags: ['Enterprise', 'Cloud', 'Analytics', 'Docker'],
-    features: [
-      'QR-tagged asset inventory',
-      'Preventive maintenance scheduling',
-      'Automated depreciation & audits',
-      'Warranty and vendor tracking',
-      'Depreciation and utilization reporting',
-    ],
-    link: '#',
-  },
-  {
-    name: 'Logistics Monitoring System',
-    slug: 'logistics-monitoring-system',
-    description:
-      'Live fleet and shipment monitoring with route optimization, ETAs and warehouse orchestration.',
-    longDescription:
-      'Logistics Monitoring System orchestrates fleets, shipments and warehouses in real time. Route optimization, predictive ETAs and warehouse coordination keep goods moving efficiently and give customers accurate, live visibility into every delivery.',
-    image: '/products/logistics-monitoring.png',
-    tags: ['Logistics', 'Maps', 'IoT', 'Python'],
-    features: [
-      'Live fleet and shipment tracking',
-      'Route optimization & predictive ETAs',
-      'Warehouse and dock orchestration',
-      'Customer-facing tracking pages',
-      'Exception alerts and SLA monitoring',
+      'Fingerprint-based attendance hardware',
+      'Realtime attendance dashboard',
+      'Payroll & HR system integration',
+      'Multi-location device management',
     ],
     link: '#',
   },
@@ -479,8 +443,8 @@ export const projects: Project[] = [
 
 /* --------------------------------- Nav links -------------------------------- */
 export const navLinks = [
-  { label: 'Services', href: '/services' },
+  { label: 'Home', href: '/' },
   { label: 'Products', href: '/products' },
-  { label: 'Industries', href: '/industries' },
+  { label: 'Services', href: '/services' },
   { label: 'Projects', href: '/projects' },
 ]

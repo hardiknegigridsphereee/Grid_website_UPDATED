@@ -1,9 +1,11 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { services } from '@/data/content'
+import { serviceCategories } from '@/data/content'
 import { SectionHeading } from '@/components/section-heading'
 import { staggerContainer, fadeUp } from '@/animations/variants'
+
+const services = serviceCategories.flatMap((cat) => cat.items)
 
 export function Services() {
   return (
