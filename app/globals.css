@@ -21,6 +21,9 @@
   --color-jade-bright: var(--jade-bright);
   --color-jade-foreground: var(--jade-foreground);
 
+  --color-product-accent: var(--product-accent);
+  --color-product-tint: var(--product-tint);
+
   --color-primary: var(--jade);
   --color-primary-foreground: var(--jade-foreground);
   --color-secondary: var(--card);
@@ -46,23 +49,27 @@
   color-scheme: light;
   --radius: 0.75rem;
 
-  --background: #f4f7f5;
-  --foreground: #0a1611;
+  --background: #f5f7f8;
+  --foreground: #0d1518;
   --card: #ffffff;
-  --card-foreground: #0a1611;
-  --muted: #e9efeb;
-  --muted-foreground: #55665e;
-  --border: rgba(10, 22, 17, 0.1);
-  --input: rgba(10, 22, 17, 0.14);
+  --card-foreground: #0d1518;
+  --muted: #edf1f2;
+  --muted-foreground: #586268;
+  --border: rgba(13, 21, 24, 0.09);
+  --input: rgba(13, 21, 24, 0.13);
   --ring: #12a06a;
 
   --jade: #0e9a63;
   --jade-bright: #0a8054;
   --jade-foreground: #ffffff;
 
+  /* per-product theme fallbacks (overridden inline on product pages) */
+  --product-accent: #0e9a63;
+  --product-tint: rgba(14, 154, 99, 0.09);
+
   /* mode-aware decorative tokens */
-  --grid-line: rgba(10, 22, 17, 0.05);
-  --scrollbar-track: #e9efeb;
+  --grid-line: rgba(13, 21, 24, 0.045);
+  --scrollbar-track: #edf1f2;
   --scrollbar-thumb: rgba(14, 154, 99, 0.4);
   --scrollbar-thumb-hover: rgba(14, 154, 99, 0.7);
   --gradient-jade: linear-gradient(120deg, #0a1611 0%, #0e7a50 55%, #12a06a 100%);
@@ -88,6 +95,9 @@
   --jade: #2fac74;
   --jade-bright: #3ee59a;
   --jade-foreground: #04120a;
+
+  --product-accent: #3ee59a;
+  --product-tint: rgba(62, 229, 154, 0.12);
 
   --grid-line: rgba(238, 243, 239, 0.04);
   --scrollbar-track: #05100a;
@@ -158,4 +168,46 @@
 }
 .animate-marquee {
   animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+@layer utilities {
+  /* soft product-tinted panel used on themed product pages */
+  .bg-product-tint {
+    background-color: var(--product-tint);
+  }
+  .text-product-accent {
+    color: var(--product-accent);
+  }
+  .border-product-accent {
+    border-color: var(--product-accent);
+  }
+}
+
+/* Intro loader: orbiting dot + shimmering brand text */
+@keyframes intro-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.intro-orbit {
+  animation: intro-orbit 1.4s linear infinite;
+}
+
+@keyframes intro-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.intro-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted-foreground) 0%,
+    var(--muted-foreground) 35%,
+    var(--jade-bright) 50%,
+    var(--muted-foreground) 65%,
+    var(--muted-foreground) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: intro-shimmer 2s linear infinite;
 }

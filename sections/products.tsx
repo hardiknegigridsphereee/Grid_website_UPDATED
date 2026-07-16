@@ -2,6 +2,10 @@
 
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
+<<<<<<< HEAD
+=======
+import Link from 'next/link'
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
 import { ArrowUpRight } from 'lucide-react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -68,9 +72,18 @@ export function Products() {
               key={product.name}
               className="group relative flex w-full shrink-0 flex-col overflow-hidden rounded-3xl border border-border bg-card md:w-[34rem]"
             >
+<<<<<<< HEAD
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image
                   src={product.image || '/placeholder.svg'}
+=======
+              <Link
+                href={`/products/${product.slug}`}
+                className="relative block aspect-[16/10] overflow-hidden"
+              >
+                <Image
+                  src={product.heroImage || product.image || '/placeholder.svg'}
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
                   alt={`${product.name} interface`}
                   fill
                   sizes="(max-width: 768px) 100vw, 544px"
@@ -81,7 +94,14 @@ export function Products() {
                 <span className="absolute left-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-xs text-muted-foreground backdrop-blur-sm">
                   0{i + 1}
                 </span>
+<<<<<<< HEAD
               </div>
+=======
+                <span className="absolute right-4 top-4 rounded-full border border-border bg-background/70 px-3 py-1 text-xs font-medium text-jade-bright backdrop-blur-sm">
+                  {product.tagline}
+                </span>
+              </Link>
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
 
               <div className="flex flex-1 flex-col gap-4 p-7">
                 <h3 className="text-2xl font-semibold">{product.name}</h3>
@@ -98,13 +118,22 @@ export function Products() {
                     </span>
                   ))}
                 </div>
+<<<<<<< HEAD
                 <a
                   href={product.link}
+=======
+                <Link
+                  href={`/products/${product.slug}`}
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
                   className="mt-auto inline-flex w-fit items-center gap-1.5 pt-4 text-sm font-medium text-jade-bright transition-colors hover:text-foreground"
                 >
                   Learn more
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+<<<<<<< HEAD
                 </a>
+=======
+                </Link>
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
               </div>
             </article>
           ))}

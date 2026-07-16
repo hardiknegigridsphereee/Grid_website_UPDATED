@@ -33,6 +33,7 @@ export default async function ProductDetailPage({
   const product = products.find((p) => p.slug === slug)
   if (!product) notFound()
 
+<<<<<<< HEAD
   const related = products.filter((p) => p.slug !== slug).slice(0, 3)
 
   return (
@@ -40,6 +41,16 @@ export default async function ProductDetailPage({
       <Navbar />
       <main className="relative bg-background">
         <ProductDetailContent product={product} related={related} />
+=======
+  return (
+    <>
+      <Navbar />
+      <main
+        className="relative bg-background"
+        style={product.theme.vars as React.CSSProperties}
+      >
+        <ProductDetailContent slug={slug} />
+>>>>>>> 5ad4dd63e3fdd19a6a67334173530f7c34ef0895
         <CtaBanner
           title={
             <>

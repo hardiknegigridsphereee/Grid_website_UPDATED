@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence, useAnimation } from 'framer-motion'
-import { useTheme } from 'next-themes'
 
 interface IntroAnimationProps {
   logoSrc?: string
@@ -11,50 +10,25 @@ interface IntroAnimationProps {
   onComplete?: () => void
 }
 
-// Auto-playing intro: logo scales/fades in at center, holds, then FLIES
-// (measured position → animated x/y/scale) into the navbar logo's exact
-// spot while the dark overlay fades away underneath it.
+// Auto-playing intro: logo scales/fades in at center surrounded by orbiting
+// dots and pulsing rings, a progress bar fills, then the logo FLIES
+// (measured position → animated x/y/scale) into the navbar logo's exact spot
+// while the overlay fades away underneath it.
 export function IntroAnimation({
-  logoSrc,
+  logoSrc = '/logo1-transparent.png',
   brandName = 'GridSphere',
   targetId = 'navbar-logo',
   onComplete = () => {},
 }: IntroAnimationProps) {
   const [show, setShow] = useState(true)
   const [textVisible, setTextVisible] = useState(true)
-  const [mounted, setMounted] = useState(false)
   const logoRef = useRef<HTMLImageElement>(null)
   const logoControls = useAnimation()
   const overlayControls = useAnimation()
-  const { resolvedTheme } = useTheme()
 
   useEffect(() => {
-    if (resolvedTheme) setMounted(true)
-  }, [resolvedTheme])
-
-  const resolvedLogoSrc =
-    logoSrc ?? (resolvedTheme === 'dark' ? '/logo-dark.png' : '/logo-light.png')
-
-  useEffect(() => {
-    if (!mounted) return
-
     document.body.style.overflow = 'hidden'
     let cancelled = false
-    let finished = false
-
-    const finish = () => {
-      if (finished || cancelled) return
-      finished = true
-      setShow(false)
-      document.body.style.overflow = ''
-      onComplete()
-    }
-
-    // Hard safety net: no matter what happens in the animation sequence
-    // below (stale useAnimation controls after Fast Refresh, target
-    // element never appearing, a promise that never resolves, etc.),
-    // the intro will never block the page for more than ~4.5s.
-    const safetyTimer = setTimeout(finish, 4500)
 
     const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
@@ -63,13 +37,13 @@ export function IntroAnimation({
       await logoControls.start({
         opacity: 1,
         scale: 1,
-        transition: { duration: 1, ease: [0.16, 1, 0.3, 1] },
+        transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
       })
 
       if (cancelled) return
 
       // 1b. Continuous "loading" spin — fired without awaiting, so it
-      // keeps looping in the background while we wait/hide text below.
+      // keeps looping in the background while the progress bar fills.
       const SPIN_DURATION = 1.4 // seconds per full 360° rotation
       const spinStartedAt = performance.now()
 
@@ -78,7 +52,7 @@ export function IntroAnimation({
         transition: { duration: SPIN_DURATION, ease: 'linear', repeat: Infinity },
       })
 
-      await wait(900)
+      await wait(1500)
       setTextVisible(false)
       await wait(300)
       if (cancelled) return
@@ -99,14 +73,8 @@ export function IntroAnimation({
       logoControls.set({ rotate: 0 })
       if (cancelled) return
 
-      // 2. Measure navbar logo position vs current intro logo position.
-      // Give the target element a couple of animation frames to exist —
-      // it's rendered by a sibling component that mounts independently.
-      let targetEl = document.getElementById(targetId)
-      for (let i = 0; i < 3 && !targetEl; i++) {
-        await new Promise((r) => requestAnimationFrame(r))
-        targetEl = document.getElementById(targetId)
-      }
+      // 2. Measure navbar logo position vs current intro logo position
+      const targetEl = document.getElementById(targetId)
       const logoEl = logoRef.current
 
       if (targetEl && logoEl) {
@@ -143,20 +111,19 @@ export function IntroAnimation({
       }
 
       if (cancelled) return
-      finish()
+      setShow(false)
+      document.body.style.overflow = ''
+      onComplete()
     }
 
-    sequence().catch(finish)
+    sequence()
 
     return () => {
       cancelled = true
-      clearTimeout(safetyTimer)
       document.body.style.overflow = ''
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted])
-
-  if (!mounted) return null
+  }, [])
 
   return (
     <AnimatePresence>
@@ -166,38 +133,109 @@ export function IntroAnimation({
           animate={overlayControls}
           className="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-background"
         >
-          <motion.img
-            ref={logoRef}
-            src={resolvedLogoSrc}
-            alt={brandName}
-            initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
-            animate={logoControls}
-            className="mb-8 h-28 w-28 object-contain md:h-40 md:w-40"
-          />
+          {/* faint grid backdrop */}
+          <div className="grid-lines pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
 
-          <AnimatePresence>
-            {textVisible && (
-              <>
-                <motion.h1
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-                  className="font-display text-2xl font-semibold tracking-wide text-foreground md:text-4xl"
-                >
-                  {brandName}
-                </motion.h1>
+          <div className="relative flex flex-col items-center">
+            {/* logo + decorative orbit */}
+            <div className="relative mb-10 flex h-40 w-40 items-center justify-center md:h-52 md:w-52">
+              <AnimatePresence>
+                {textVisible && (
+                  <>
+                    {/* pulsing concentric rings */}
+                    {[0, 1].map((i) => (
+                      <motion.span
+                        key={i}
+                        aria-hidden="true"
+                        className="absolute rounded-full border border-jade-bright/30"
+                        initial={{ opacity: 0.5, scale: 0.7, width: '9rem', height: '9rem' }}
+                        animate={{ opacity: 0, scale: 1.4 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: 'easeOut',
+                          delay: i * 1,
+                        }}
+                      />
+                    ))}
 
-                <motion.div
-                  initial={{ width: 0, opacity: 0 }}
-                  animate={{ width: 80, opacity: 1 }}
-                  exit={{ width: 0, opacity: 0 }}
-                  transition={{ duration: 0.6, delay: 0.9, ease: 'easeOut' }}
-                  className="mt-4 h-[2px] rounded-full bg-jade-bright"
-                />
-              </>
-            )}
-          </AnimatePresence>
+                    {/* static thin ring */}
+                    <motion.span
+                      aria-hidden="true"
+                      className="absolute h-36 w-36 rounded-full border border-border md:h-44 md:w-44"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    />
+
+                    {/* orbiting dots */}
+                    <motion.span
+                      aria-hidden="true"
+                      className="intro-orbit absolute h-36 w-36 md:h-44 md:w-44"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <span className="absolute left-1/2 top-0 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-jade-bright" />
+                      <span className="absolute bottom-0 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-jade-bright/60" />
+                    </motion.span>
+                  </>
+                )}
+              </AnimatePresence>
+
+              <motion.img
+                ref={logoRef}
+                src={logoSrc}
+                alt={brandName}
+                initial={{ opacity: 0, scale: 0.6, x: 0, y: 0 }}
+                animate={logoControls}
+                className="relative h-24 w-24 object-contain md:h-32 md:w-32"
+              />
+            </div>
+
+            <AnimatePresence>
+              {textVisible && (
+                <>
+                  <motion.h1
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.7, delay: 0.3, ease: 'easeOut' }}
+                    className="intro-shimmer font-display text-3xl font-semibold tracking-wide md:text-4xl"
+                  >
+                    {brandName}
+                  </motion.h1>
+
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
+                    className="mt-2 text-xs uppercase tracking-[0.32em] text-muted-foreground"
+                  >
+                    Software · AI · Hardware
+                  </motion.p>
+
+                  {/* progress bar */}
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.4, delay: 0.5 }}
+                    className="mt-6 h-[3px] w-40 overflow-hidden rounded-full bg-border"
+                  >
+                    <motion.span
+                      className="block h-full rounded-full bg-jade-bright"
+                      initial={{ width: '0%' }}
+                      animate={{ width: '100%' }}
+                      transition={{ duration: 2.1, ease: 'easeInOut' }}
+                    />
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

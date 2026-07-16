@@ -2,7 +2,7 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { Hero } from '@/sections/hero'
 import { Metrics } from '@/sections/metrics'
-import { Services } from '@/sections/services'
+// import { Services } from '@/sections/services'
 import { Products } from '@/sections/products'
 import { Industries } from '@/sections/industries'
 import { TechStack } from '@/sections/tech-stack'
@@ -20,7 +20,7 @@ export default function Home() {
       <main className="relative bg-background">
         <Hero />
         <Metrics />
-        <Services />
+        {/* <Services /> */}
         <Products />
         <Industries />
         <TechStack />
