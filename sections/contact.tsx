@@ -219,7 +219,7 @@ export default function Contact() {
                                 className="rounded-2xl border border-border bg-card/40 p-4 backdrop-blur-sm transition-colors hover:border-jade/40"
                             >
                                 <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-jade/10 text-jade-bright">
-                                    <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5">
+                                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-5 w-5">
                                         {item.icon}
                                     </svg>
                                 </div>
