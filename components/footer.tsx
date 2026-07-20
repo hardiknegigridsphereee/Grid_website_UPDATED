@@ -14,16 +14,19 @@ export function Footer() {
     <footer className="border-t border-border bg-background">
       <div className="mx-auto grid max-w-7xl gap-12 px-6 py-16 md:grid-cols-[1.5fr_1fr_1fr] lg:px-8">
         <div className="space-y-4">
-          <a href="#top" className="flex items-center gap-2">
-            <img
-              src="/logo1-transparent.png"
-              alt="GridSphere"
-              className="h-8 w-8 object-contain"
-            />
-            <span className="font-display text-lg font-semibold leading-none">
-              GridSphere
-            </span>
-          </a>
+         <a href="#top" className="flex items-center gap-2">
+  <img
+    src="/products/logo-light.png"
+    alt="GridSphere"
+    className="h-14 w-auto object-contain dark:hidden"
+  />
+  <img
+    src="/products/logo-dark.png"
+    alt="GridSphere"
+    className="hidden h-14 w-auto object-contain dark:block"
+  />
+  
+</a>
           <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
             AI-Powered Software, ERP & Enterprise Platforms for Modern Businesses — AI products, ERP systems,
             enterprise software and next-generation platforms.
